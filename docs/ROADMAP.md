@@ -2,20 +2,8 @@
 
 As fases são sequenciais. Não avançar para uma integração operacional enquanto autorização e autenticação não estiverem suficientemente compreendidas.
 
-## Fase 1 — Validar premissas e regras de uso
 
-**Entregáveis**
-
-- Registro do que foi observado e do que permanece hipótese.
-- Avaliação das regras aplicáveis à automação e busca por integração oficialmente suportada.
-- Decisão documentada sobre o caminho de integração permitido.
-
-**Conclusão quando**
-
-- Há evidência suficiente para decidir se a integração pretendida pode prosseguir e por qual mecanismo.
-- Uma rota interna observada não é tratada como oficial apenas por ter sido vista no DevTools.
-
-## Fase 2 — Especificar autenticação e comportamento de consulta
+ Fase 2 — Especificar autenticação e comportamento de consulta
 
 **Entregáveis**
 
