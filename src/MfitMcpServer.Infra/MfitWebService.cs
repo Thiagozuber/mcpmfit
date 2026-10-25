@@ -49,6 +49,11 @@ public sealed class MfitWebService : IMFitService
         }
     }
 
+    public async Task<DetalheTreino?> ObterTreinoPorIdAsync(long idPrescription)
+    {
+        return await _apiClient.ObterTreinoPorIdAsync(idPrescription);
+    }
+
     private static List<Aluno> Copiar(IEnumerable<Aluno> alunos) =>
         alunos.Select(aluno => new Aluno
         {
@@ -56,6 +61,19 @@ public sealed class MfitWebService : IMFitService
             Nome = aluno.Nome,
             Plano = aluno.Plano
         }).ToList();
+
+    public async Task<List<ExercicioCatalogo>> PesquisarExerciciosAsync(string termoOuGrupo)
+    {
+    // Implementação da busca no catálogo via serviço web/API do MFIT
+    // (ou chamada ao _apiclient correspondente quando implementado)
+    return await Task.FromResult(new List<ExercicioCatalogo>());
+    }
+
+    public async Task<bool> CriarTreinoAsync(NovoTreino novoTreino)
+{
+    // Lógica para enviar a requisição de criação ao MFIT
+    return await Task.FromResult(true);
+}
 
     private sealed record CacheEntry(List<Aluno> Alunos, DateTimeOffset ExpiresAt);
 }

@@ -218,4 +218,33 @@ public sealed class MfitApiClient
 
         return await authorizationCapturado.Task;
     }
+
+    public async Task<DetalheTreino?> ObterTreinoPorIdAsync(long idPrescription)
+{
+    using var playwright = await Playwright.CreateAsync();
+    var pastaPerfil = MfitSessao.PastaPerfil();
+
+    if (!Directory.Exists(pastaPerfil))
+    {
+        throw new InvalidOperationException("Sessão do MFIT não encontrada. Rode: dotnet MfitMcpServer.Api.dll --login");
+    }
+
+    await using var context = await playwright.Chromium.LaunchPersistentContextAsync(
+        pastaPerfil,
+        new BrowserTypeLaunchPersistentContextOptions { Headless = true });
+
+    var page = context.Pages.FirstOrDefault() ?? await context.NewPageAsync();
+    await page.GotoAsync(MfitSessao.UrlLista, new PageGotoOptions { WaitUntil = WaitUntilState.DOMContentLoaded });
+
+    var urlApi = $"https://api.mfitpersonal.com.br/v2/user/workout/prescription/?id={idPrescription}";
+    var responseJson = await page.EvaluateAsync<string>("async (url) => { const res = await fetch(url); return await res.text(); }", urlApi);
+
+    if (string.IsNullOrWhiteSpace(responseJson))
+    {
+        return null;
+    }
+
+    return JsonSerializer.Deserialize<DetalheTreino>(responseJson);
+}
+
 }
