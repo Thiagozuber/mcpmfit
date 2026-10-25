@@ -3,8 +3,50 @@
 ##
 ## Get latest from `dotnet new gitignore`
 
-# dotenv files
+# ---------------------------------------------------------------------------
+# Sensitive files / Segredos do usuário ( proteção contra vazamento )
+# ---------------------------------------------------------------------------
+
+# Configurações de aplicativo que podem conter segredos (chaves, connection strings)
+# Mantenha apenas um arquivo de modelo (appsettings.template.json) no repositório.
+**/appsettings.json
+**/appsettings.*.json
+!**/appsettings.template.json
+
+# Arquivos locais de configuração do usuário
+**/appsettings.local.json
+**/appsettings.Development.json
+**/appsettings.Production.json
+
+# Segredos do usuário (User Secrets) do .NET
+**/*.user.secrets.json
+**/Properties/launchSettings.json
+**/Properties/settings.json
+
+# Ambiente e arquivos de credenciais
 .env
+.env.*
+!.env.example
+
+# Credenciais, chaves e certificados
+**/credentials.json
+**/secrets.json
+**/*.pfx
+**/*.p12
+**/*.key
+**/id_rsa
+**/id_ed25519
+**/id_rsa.pub
+**/*.keystore
+
+# Cadeado de connection strings (possíveis senhas em texto plano)
+**/connectionstrings.json
+**/app.config
+**/web.config
+
+# ---------------------------------------------------------------------------
+# dotenv files (mantido da base do template)
+# ---------------------------------------------------------------------------
 
 # User-specific files
 *.rsuser
