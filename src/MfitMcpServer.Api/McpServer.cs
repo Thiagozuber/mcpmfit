@@ -18,6 +18,10 @@ public class McpServer
 
     public async Task RunAsync(CancellationToken cancellationToken)
     {
+        // UTF-8 sem BOM, para acentos e nomes saírem corretos no protocolo
+        Console.OutputEncoding = new UTF8Encoding(false);
+        Console.InputEncoding = new UTF8Encoding(false);
+
         _logger.LogInformation("Servidor MCP iniciado.");
         while (!cancellationToken.IsCancellationRequested)
         {
@@ -35,7 +39,7 @@ public class McpServer
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Erro ao processar mensagem MCP: {Line}", line);
+                _logger.LogError(ex, "Erro ao processar mensagem MCP.");
             }
         }
     }
@@ -65,13 +69,19 @@ public class McpServer
                 idStr = idProp.GetRawText();
             }
 
+            // Notificações (ex.: notifications/initialized, notifications/cancelled) não têm resposta
+            if (method is not null && method.StartsWith("notifications/"))
+            {
+                return null;
+            }
+
             if (method == "initialize")
             {
                 return BuildResponse(idStr, BuildInitialize());
             }
-            if (method == "notifications/initialized")
+            if (method == "ping")
             {
-                return null; // Notificação não envia resposta
+                return BuildResponse(idStr, JsonDocument.Parse("{}").RootElement.Clone());
             }
             if (method == "tools/list")
             {
@@ -80,6 +90,12 @@ public class McpServer
             if (method == "tools/call")
             {
                 return await HandleToolCallAsync(root, idStr, ct);
+            }
+
+            // Sem id = notificação, não responde
+            if (idStr == "null")
+            {
+                return null;
             }
 
             // Método desconhecido
@@ -162,15 +178,18 @@ public class McpServer
         }
     }
 
-    private static string BuildResponse(string id, JsonElement result)
+       private static string BuildResponse(string id, JsonElement result)
     {
-        var resultJson = result.GetRawText();
+        // Serialize escreve o JSON compacto, em uma linha só (GetRawText mantinha as quebras de linha)
+        var resultJson = JsonSerializer.Serialize(result);
         return $"{{\"jsonrpc\":\"2.0\",\"id\":{id},\"result\":{resultJson}}}";
     }
 
     private static string BuildErrorResponse(string id, int code, string message)
     {
-        return $"{{\"jsonrpc\":\"2.0\",\"id\":{id},\"error\":{{\"code\":{code},\"message\":\"{message}\"}}}}";
+        // JsonSerializer escapa aspas e caracteres especiais da mensagem
+        var messageJson = JsonSerializer.Serialize(message);
+        return $"{{\"jsonrpc\":\"2.0\",\"id\":{id},\"error\":{{\"code\":{code},\"message\":{messageJson}}}}}";
     }
 
     private async Task WriteAsync(string json, CancellationToken ct)

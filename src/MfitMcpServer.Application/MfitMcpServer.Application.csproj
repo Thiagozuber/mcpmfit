@@ -2,7 +2,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\MfitMcpServer.Domain\MfitMcpServer.Domain.csproj" />
-    <ProjectReference Include="..\MfitMcpServer.Infra\MfitMcpServer.Infra.csproj" />
   </ItemGroup>
 
   <PropertyGroup>

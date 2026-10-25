@@ -107,6 +107,30 @@ project.lock.json
 project.fragment.lock.json
 artifacts/
 
+# Navegadores persistentes e sessões locais
+**/profile/
+**/session/
+**/sessions/
+**/browser-profile/
+**/mfit-profile/
+**/playwright-profile/
+**/.mfit-session/
+.playwright/
+playwright/.auth/
+
+# Backups e arquivos temporários que possam conter dados de usuário
+*.bak
+*.bak.*
+*.backup
+*.backup.*
+*.old
+*.old.*
+*.orig
+*.orig.*
+*~
+**/backup/
+**/backups/
+
 # Tye
 .tye/
 
@@ -522,3 +546,8 @@ $RECYCLE.BIN/
 
 # Vim temporary swap files
 *.swp
+
+# Perfil do Playwright / Sessão do MFIT
+profile/
+**/profile/
+AppData/
